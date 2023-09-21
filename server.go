@@ -17,6 +17,22 @@ func asciiHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.Method == "GET" && r.URL.Path != "/" {
+		fmt.Fprintf(w, "404 Not found")
+		return
+	}
+
+	text_for_ascii := r.FormValue("text_for_ascii")
+	type_of_ascii := r.FormValue("type")
+
+	for _, letter := range text_for_ascii {
+		if letter > 31 && letter < 127 {
+			continue
+		}
+		w.WriteHeader(400)
+		return
+	}
+
 	// Process the submitted form
 
 	// HTML template for displaying the form
@@ -51,11 +67,6 @@ func asciiHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse and execute the HTML template
 	t := template.Must(template.New("tmpl").Parse(tmpl))
 	t.Execute(w, "")
-
-	r.ParseForm() // Parsing again; consider removing this redundant step
-	// Retrieve form values
-	text_for_ascii := r.FormValue("text_for_ascii")
-	type_of_ascii := r.FormValue("type")
 
 	if r.Method == "POST" {
 
