@@ -26,7 +26,8 @@ func asciiHandler(w http.ResponseWriter, r *http.Request) {
 	type_of_ascii := r.FormValue("type")
 
 	for _, letter := range text_for_ascii {
-		if letter > 31 && letter < 127 {
+		if letter > 31 && letter < 127 || letter == 13 || letter == 10 {
+			fmt.Println(letter)
 			continue
 		}
 		w.WriteHeader(400)
